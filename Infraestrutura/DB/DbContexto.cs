@@ -22,7 +22,7 @@ namespace minimal_api.Infraestrutura.DB
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Adiministrador>().HasData(
+            modelBuilder.Entity<Adiministrador>().HasData( //cadastrando adm
                 new Adiministrador
                 {
                     Id = 1 ,

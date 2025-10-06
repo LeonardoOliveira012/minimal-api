@@ -1,10 +1,19 @@
 using minimal_api.Infraestrutura.DB;
 using Microsoft.EntityFrameworkCore;
+using minimal_api.Dominio.Interfaces;
+using minimal_api.Dominio.Servicos;
+using Microsoft.AspNetCore.Mvc;
+using minimal_api.DTOs;
+
 
 
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+
+builder.Services.AddScoped<IAdministradorServicos, AdiministradorServico>();// Resolvendo a depedendcia
 
 
 builder.Services.AddDbContext<DbContexto>(options =>
@@ -25,9 +34,9 @@ app.MapGet("/", () => "Hello World!");
 
 
 //Data Trnsfer object
-app.MapPost("/login", (minimal_api.DTOs.LoginDTO LoginDTO) =>
+app.MapPost("/login", ([FromBody] LoginDTO loginDTO, IAdministradorServicos administradorServico) =>
 {
-    if (LoginDTO.Email == "adm@teste.com" && LoginDTO.Senha == "123456")
+    if (administradorServico.Login(loginDTO) != null)
     {
         return Results.Ok("Sucesso ao logar."); //verificando se pode logar
     }
