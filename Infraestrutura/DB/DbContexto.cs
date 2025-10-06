@@ -17,9 +17,22 @@ namespace minimal_api.Infraestrutura.DB
             _configuracaoAppSettings = configuracaoAppSettings;
         }
 
-
-
         public DbSet<Adiministrador> Adiministradores { get; set; } = default!;
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Adiministrador>().HasData(
+                new Adiministrador
+                {
+                    Id = 1 ,
+                    Email = "adiministrado@teste.com",
+                    Senha = "123456",      //em um contexti real usar criptografia
+                    Perfil = "Adm"
+
+                }
+            );
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -34,10 +47,10 @@ namespace minimal_api.Infraestrutura.DB
                     optionsBuilder.UseMySql(stringConexao,
                     ServerVersion.AutoDetect(stringConexao));
                 }
-                
+
 
             }
-           
+
         }
     }
 }
