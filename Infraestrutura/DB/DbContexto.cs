@@ -18,6 +18,7 @@ namespace minimal_api.Infraestrutura.DB
         }
 
         public DbSet<Adiministrador> Adiministradores { get; set; } = default!;
+        public DbSet<Veiculo> Veiculos { get; set; } = default!;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,7 +26,7 @@ namespace minimal_api.Infraestrutura.DB
             modelBuilder.Entity<Adiministrador>().HasData( //cadastrando adm
                 new Adiministrador
                 {
-                    Id = 1 ,
+                    Id = 1,
                     Email = "adiministrado@teste.com",
                     Senha = "123456",      //em um contexti real usar criptografia
                     Perfil = "Adm"

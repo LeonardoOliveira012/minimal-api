@@ -4,6 +4,7 @@ using minimal_api.Dominio.Interfaces;
 using minimal_api.Dominio.Servicos;
 using Microsoft.AspNetCore.Mvc;
 using minimal_api.DTOs;
+using minimal_api.Dominio.ModelViews;
 
 
 
@@ -14,6 +15,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddScoped<IAdministradorServicos, AdiministradorServico>();// Resolvendo a depedendcia
+
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddDbContext<DbContexto>(options =>
@@ -27,8 +32,11 @@ builder.Services.AddDbContext<DbContexto>(options =>
 
 var app = builder.Build();
 
+app.UseSwagger();
+app.UseSwaggerUI();
 
-app.MapGet("/", () => "Hello World!");
+
+app.MapGet("/", () => Results.Json(new Home()));// Chamndo o struct com o swagger
 
 
 
@@ -45,6 +53,7 @@ app.MapPost("/login", ([FromBody] LoginDTO loginDTO, IAdministradorServicos admi
         return Results.Unauthorized(); //falha ao logar
     }
 });
+
 
 
 app.Run();
