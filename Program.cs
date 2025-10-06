@@ -1,7 +1,28 @@
+using minimal_api.Infraestrutura.DB;
+using Microsoft.EntityFrameworkCore;
+
+
+
+
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Services.AddDbContext<DbContexto>(options =>
+{
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("mysql"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mysql"))
+    );
+});
+
+
 var app = builder.Build();
 
+
 app.MapGet("/", () => "Hello World!");
+
+
+
 
 //Data Trnsfer object
 app.MapPost("/login", (minimal_api.DTOs.LoginDTO LoginDTO) =>
