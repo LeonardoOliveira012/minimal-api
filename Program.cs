@@ -66,8 +66,40 @@ app.MapPost("/administradores/login", ([FromBody] LoginDTO loginDTO, IAdministra
 
 #region Veiculos
 
-app.MapPost("/veiculos", ([FromBody] VeiculoDTO veiculoDTO, IVeiculoServico veiculoServico) =>
+ErrosDeValidacao validaDTO(VeiculoDTO veiculoDTO)
 {
+    var validacao = new ErrosDeValidacao
+    {
+        Mensagens = new List<string>()
+    };
+
+    //Validando os campos
+    if (string.IsNullOrEmpty(veiculoDTO.Nome))
+    {
+        validacao.Mensagens.Add("O nome não pode ser vazio");
+    }
+    if (string.IsNullOrEmpty(veiculoDTO.Marca))
+    {
+        validacao.Mensagens.Add("O nome não pode ser vazio");
+    }
+    if (veiculoDTO.Ano < 1950)
+    {
+        validacao.Mensagens.Add("Veiculo muito antigo, só aceitamos superiores á 1950");
+    }
+
+    return validacao;
+}
+
+app.MapPost("/veiculos", ([FromBody] VeiculoDTO veiculoDTO, IVeiculoServico veiculoServico) =>
+{       
+
+    var validacao = validaDTO(veiculoDTO);
+        if (validacao.Mensagens.Count > 0)
+    {
+        return Results.BadRequest(validacao);
+    }
+        
+    //Cadastro dos veiculos
     var veiculo = new minimal_api.Dominio.Entidades.Veiculo
     {
         Nome = veiculoDTO.Nome,
@@ -107,11 +139,18 @@ app.MapGet("/veiculos/{id}", ([FromRoute] int id, IVeiculoServico veiculoServico
 ).WithTags("Veiculos");
 
 app.MapPut("/veiculos/{id}", ([FromRoute] int id, VeiculoDTO veiculoDTO, IVeiculoServico veiculoServico) =>
-{
-
+{   
     var veiculos = veiculoServico.BuscaPorId(id);
 
     if (veiculos == null) return Results.NotFound();
+
+     var validacao = validaDTO(veiculoDTO);
+        if (validacao.Mensagens.Count > 0)
+    {
+        return Results.BadRequest(validacao);
+    }
+
+    
 
     veiculos.Nome = veiculoDTO.Nome;
     veiculos.Marca = veiculoDTO.Marca;
